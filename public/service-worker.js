@@ -19,7 +19,7 @@ function createDB() {
 
 
 //self refferences service worker
-// install
+// install 
 self.addEventListener("install", function(evt) {
   evt.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -31,6 +31,7 @@ self.addEventListener("install", function(evt) {
   self.skipWaiting();
 });
 
+//activate includes call to open indexDB
 self.addEventListener("activate", function(evt) {
   evt.waitUntil(createDB(),
     caches.keys().then(keyList => {
