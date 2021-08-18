@@ -10,6 +10,14 @@ const FILES_TO_CACHE = [
 
 const CACHE_NAME = "static-cache-v2";
 
+//create indexDB Budget database.
+function createDB() {
+  indexedDB.open('BudgetDB', 1, function(upgradeDB) {
+    var db = upgradeDB.createObjectStore('BudgetStore', { autoIncrement: true});
+  })
+}
+
+
 //self refferences service worker
 // install
 self.addEventListener("install", function(evt) {
@@ -24,7 +32,7 @@ self.addEventListener("install", function(evt) {
 });
 
 self.addEventListener("activate", function(evt) {
-  evt.waitUntil(
+  evt.waitUntil(createDB(),
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
