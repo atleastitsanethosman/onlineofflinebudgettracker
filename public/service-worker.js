@@ -10,15 +10,7 @@ const FILES_TO_CACHE = [
 
 const CACHE_NAME = "static-cache-v2";
 
-//create indexDB Budget database.
-function createDB() {
-  indexedDB.open('BudgetDB', 1, function(upgradeDB) {
-    var db = upgradeDB.createObjectStore('BudgetStore', { autoIncrement: true});
-  })
-}
 
-
-//self refferences service worker
 // install 
 self.addEventListener("install", function(evt) {
   evt.waitUntil(
@@ -31,9 +23,9 @@ self.addEventListener("install", function(evt) {
   self.skipWaiting();
 });
 
-//activate includes call to open indexDB
+//activate will clean and refresh cache data.
 self.addEventListener("activate", function(evt) {
-  evt.waitUntil(createDB(),
+  evt.waitUntil(
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
@@ -49,10 +41,8 @@ self.addEventListener("activate", function(evt) {
   self.clients.claim();
 });
 
-// fetch
+// fetch event monitor to serve requests with a cache first process.
 self.addEventListener("fetch", function(evt) {
-  // if the request is not for the API, serve static assets using "offline-first" approach.
-  // see https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-falling-back-to-network
   evt.respondWith(
     caches.match(evt.request).then(function(response) {
       return response || fetch(evt.request);
